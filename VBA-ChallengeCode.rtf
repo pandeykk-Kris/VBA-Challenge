@@ -1,0 +1,100 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Sub MultipleStock():\
+\
+' Set  variables\
+    Dim ws As Worksheet\
+    Dim i As Long\
+\
+'loop thru all worksheets\
+\
+For Each ws In ThisWokbook.Worksheets\
+\
+    Dim Ticker As String\
+    Dim QuarterlyChange As Double\
+    Dim PercentChange As Double\
+    Dim TotalVolume As Double\
+    Dim LastRow As Long\
+    Dim SummaryRow As Double\
+    Dim OpeningPrice As Double\
+    Dim ClosingPrice As Double\
+\
+' Set column headers in summary table\
+    ws.Cells(1, 9).Value = "Ticker"\
+    ws.Cells(1, 10).Value = "Quarterly Change"\
+    ws.Cells(1, 11).Value = "Percent Change"\
+    ws.Cells(1, 12).Value = "Total  Volume"\
+\
+' Find the last row of data in the worksheet\
+    LastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row\
+\
+' Set initial summary table row\
+    Summary_table_row = 2\
+    TotalVolume = 0\
+    OpenPrice = 0\
+    ClosePrice = 0\
+    QuarterlyChange = 0\
+    PercentChange = 0\
+    \
+\
+' Loop through all rows of data\
+    For i = 2 To LastRow\
+\
+        ' Check if the ticker symbol has changed\
+            If ws.Cells(i + 1, 1).Value <> Cells(i, 1).Value Then\
+        \
+        ' Get the ticker symbol\
+            Ticker = Cells(i, 1).Value\
+        \
+        'get the trade volume\
+            TotalVolume = TotalVolume + Cells(i, 7).Value\
+            \
+        'printvalue\
+            ws.Range("I" & Summary_table_row).Value = Ticker\
+            ws.Range("M" & Summary_table_row).Value = TotalVolume\
+        \
+        'determine quarterly change\
+            QuarterlyChange = ws.Cells(i, 6).Value - ws.Cells(i, 3).Value\
+        'print the quarterly change\
+            ws.Range("J" & Summary_table_row).Value = QuarterlyChange\
+        \
+        'determine percent change\
+            PercentChange = ((ws.Cells(i, 6).Value - ws.Cells(i, 3).Value) / ws.Cells(i, 3).Value) * 100\
+        \
+        \
+        'Print PercentChange\
+            ws.Range("K" & Summary_table_row).Value = PercentChange\
+            ws.Range("K" & Summary_table_row).NumberFormat = "0.001%"\
+        \
+        'reset row number counts and TotalVolume\
+        \
+            Summary_table_row = Summary_table_row + 1\
+            \
+            TotalVolume = 0\
+          'reset opening price for next ticker\
+          OpenPrice = Cells(i + 1, 3)\
+          \
+        Else\
+        'get the TotalVolume value\
+        TotalVolume = TotalVolume + Cells(i, 7).Value\
+        \
+        \
+End If\
+\
+Next i\
+\
+'color formatting\
+For i = 2 To lastrow_Summary_table\
+    If Cells(i, 10).Value > 0 Then\
+        Cells(i, 10).Interior.ColorIndex = 10\
+    Else\
+        Cells(i, 10).Interior.ColorIndex = 3\
+    End If\
+Next i\
+\
+End Sub}
